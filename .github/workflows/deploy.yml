@@ -26,13 +26,18 @@ jobs:
         with:
           node-version: 18
           
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
       - name: Install dependencies
         working-directory: ./frontend
-        run: npm install
+        run: pnpm install --frozen-lockfile
         
       - name: Build
         working-directory: ./frontend
-        run: npm run build
+        run: pnpm run build
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
