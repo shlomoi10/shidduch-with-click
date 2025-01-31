@@ -3,7 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Container } from '@mui/material';
 import { Provider } from 'react-redux';
-import { Navbar } from './components/Navbar';
+import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
