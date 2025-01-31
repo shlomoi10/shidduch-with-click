@@ -1,89 +1,117 @@
-import { AppBar, Box, Button, Container, Toolbar, Typography, Stack } from '@mui/material';
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 
-const LogoContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  textDecoration: 'none',
-  flexGrow: 1,
-}));
+const pages = ['בית', 'התאמות', 'פרופיל'];
+const routes = ['/', '/matches', '/profile'];
 
-const LogoText = styled(Typography)(({ theme }) => ({
-  fontWeight: 700,
-  color: theme.palette.primary.main,
-  fontSize: '1.5rem',
-  lineHeight: 1.2,
-  letterSpacing: '0.5px',
-  textDecoration: 'none',
-  transition: 'transform 0.2s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-  },
-}));
+export const Navbar = () => {
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
-const Slogan = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  fontSize: '0.875rem',
-  fontStyle: 'italic',
-  marginTop: '-2px',
-}));
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-const Navbar = () => {
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: 'white', boxShadow: 1 }}>
-      <Container maxWidth="lg">
+    <AppBar position="static" sx={{ direction: 'rtl' }}>
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* Logo with Slogan */}
-          <LogoContainer component={RouterLink} to="/">
-            <LogoText variant="h6">
-              שידוך עם קליק
-            </LogoText>
-            <Slogan variant="subtitle2">
-              למצוא קליק בקליק
-            </Slogan>
-          </LogoContainer>
+          <Typography
+            variant="h6"
+            noWrap
+            component={RouterLink}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            שידוך בקליק
+          </Typography>
 
-          {/* Navigation Links */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-              component={RouterLink}
-              to="/about"
-              color="primary"
-              sx={{ fontWeight: 500 }}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              אודות
-            </Button>
-            <Button
-              component={RouterLink}
-              to="/login"
-              color="primary"
-              sx={{ fontWeight: 500 }}
-            >
-              התחברות
-            </Button>
-            <Button
-              component={RouterLink}
-              to="/register"
-              variant="contained"
-              color="primary"
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
               sx={{
-                fontWeight: 500,
-                borderRadius: '20px',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: (theme) => theme.shadows[4],
-                },
+                display: { xs: 'block', md: 'none' },
               }}
             >
-              הרשמה
-            </Button>
+              {pages.map((page, index) => (
+                <MenuItem 
+                  key={page} 
+                  onClick={handleCloseNavMenu}
+                  component={RouterLink}
+                  to={routes[index]}
+                >
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          <Typography
+            variant="h5"
+            noWrap
+            component={RouterLink}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            שידוך בקליק
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page, index) => (
+              <Button
+                key={page}
+                component={RouterLink}
+                to={routes[index]}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            ))}
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 };
-
-export default Navbar;

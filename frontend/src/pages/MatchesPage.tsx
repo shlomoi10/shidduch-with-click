@@ -1,143 +1,151 @@
-import { useEffect, useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Grid, 
-  Card, 
+import { useState } from 'react';
+import {
+  Container,
+  Grid,
+  Card,
   CardContent,
-  CircularProgress,
+  Typography,
+  CardActions,
+  Button,
+  Box,
+  Chip,
   Avatar,
-  Chip
 } from '@mui/material';
-import { Match } from '../types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
 import GroupIcon from '@mui/icons-material/Group';
 
-const MatchesPage = () => {
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [loading, setLoading] = useState(true);
+interface Match {
+  id: string;
+  firstName: string;
+  lastName: string;
+  age: string;
+  location: string;
+  occupation: string;
+  education: string;
+  sector: string;
+  imageUrl?: string;
+}
 
-  useEffect(() => {
-    // כאן נוסיף אנימציה של חיפוש לפני טעינת ההתאמות
-    const loadingTimeout = setTimeout(() => {
-      // בינתיים נשתמש בנתוני דמה
-      const dummyMatches: Match[] = [
-        {
-          id: 1,
-          name: 'ישראל כהן',
-          age: 23,
-          city: 'ירושלים',
-          sector: 'ליטאי',
-          education: 'ישיבת פוניבז׳'
-        },
-        {
-          id: 2,
-          name: 'משה לוי',
-          age: 24,
-          city: 'בני ברק',
-          sector: 'ספרדי',
-          education: 'ישיבת חברון'
-        },
-        {
-          id: 3,
-          name: 'יעקב פרידמן',
-          age: 22,
-          city: 'מודיעין עילית',
-          sector: 'חסידי',
-          education: 'ישיבת בעלז'
-        }
-      ];
-      setMatches(dummyMatches);
-      setLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(loadingTimeout);
-  }, []);
-
-  if (loading) {
-    return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center', 
-          justifyContent: 'center',
-          minHeight: '60vh'
-        }}
-      >
-        <CircularProgress size={60} sx={{ mb: 3 }} />
-        <Typography variant="h5">
-          מחפשים את ההתאמות המושלמות עבורך...
-        </Typography>
-      </Box>
-    );
+const matches: Match[] = [
+  {
+    id: '1',
+    firstName: 'שרה',
+    lastName: 'כהן',
+    age: '23',
+    location: 'ירושלים',
+    occupation: 'מורה',
+    education: 'תואר ראשון בחינוך',
+    sector: 'דתי לאומי',
+    imageUrl: 'https://example.com/sarah.jpg'
+  },
+  {
+    id: '2',
+    firstName: 'רחל',
+    lastName: 'לוי',
+    age: '25',
+    location: 'תל אביב',
+    occupation: 'עורכת דין',
+    education: 'תואר שני במשפטים',
+    sector: 'חרדי',
+    imageUrl: 'https://example.com/rachel.jpg'
+  },
+  {
+    id: '3',
+    firstName: 'לאה',
+    lastName: 'פרידמן',
+    age: '22',
+    location: 'בני ברק',
+    occupation: 'גרפיקאית',
+    education: 'תעודה מקצועית',
+    sector: 'חרדי',
+    imageUrl: 'https://example.com/leah.jpg'
   }
+];
+
+export const MatchesPage = () => {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const handleExpandClick = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
 
   return (
-    <Box>
-      <Typography variant="h4" align="center" gutterBottom sx={{ mb: 4 }}>
-        ההתאמות שנמצאו עבורך
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+        התאמות מוצעות
       </Typography>
 
       <Grid container spacing={4}>
         {matches.map((match) => (
-          <Grid item xs={12} md={4} key={match.id}>
+          <Grid item xs={12} sm={6} md={4} key={match.id}>
             <Card 
               sx={{ 
                 height: '100%',
-                transition: '0.3s',
+                display: 'flex',
+                flexDirection: 'column',
                 '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: 6
+                  transform: 'translateY(-4px)',
+                  transition: 'transform 0.2s ease-in-out',
                 }
               }}
             >
-              <CardContent>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar 
-                    sx={{ 
-                      width: 80, 
-                      height: 80,
-                      bgcolor: 'primary.main',
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {match.name.charAt(0)}
-                  </Avatar>
-                  <Box sx={{ ml: 2 }}>
-                    <Typography variant="h6">{match.name}</Typography>
-                    <Typography color="textSecondary">גיל: {match.age}</Typography>
+                  <Avatar
+                    src={match.imageUrl}
+                    sx={{ width: 60, height: 60, mr: 2 }}
+                  />
+                  <Box>
+                    <Typography variant="h6" component="div">
+                      {`${match.firstName} ${match.lastName}`}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      גיל: {match.age}
+                    </Typography>
                   </Box>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <LocationOnIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  <Typography>{match.city}</Typography>
+                  <LocationOnIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="body2">{match.location}</Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <GroupIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  <Typography>{match.sector}</Typography>
+                  <SchoolIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="body2">{match.education}</Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <SchoolIcon sx={{ mr: 1, color: 'text.secondary' }} />
-                  <Typography>{match.education}</Typography>
+                  <GroupIcon sx={{ mr: 1, color: 'primary.main' }} />
+                  <Typography variant="body2">{match.sector}</Typography>
                 </Box>
 
                 <Chip 
-                  label="התאמה גבוהה" 
-                  color="success" 
-                  sx={{ borderRadius: 2 }}
+                  label={match.occupation}
+                  color="primary"
+                  variant="outlined"
+                  size="small"
                 />
               </CardContent>
+
+              <CardActions>
+                <Button 
+                  size="small" 
+                  color="primary"
+                  onClick={() => handleExpandClick(match.id)}
+                  sx={{ mr: 'auto' }}
+                >
+                  {expandedId === match.id ? 'פחות פרטים' : 'עוד פרטים'}
+                </Button>
+                <Button size="small" color="primary">
+                  יצירת קשר
+                </Button>
+              </CardActions>
             </Card>
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </Container>
   );
 };
-
-export default MatchesPage;
