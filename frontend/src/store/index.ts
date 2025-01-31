@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from './userSlice';
 
 interface User {
   id: string;
@@ -33,3 +35,12 @@ export const useStore = create<AppState>((set) => ({
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 }));
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

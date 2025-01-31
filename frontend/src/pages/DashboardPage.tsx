@@ -13,7 +13,6 @@ import {
   Avatar,
   CircularProgress,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface Match {
@@ -29,7 +28,6 @@ interface Match {
 const DashboardPage = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMatches = async () => {

@@ -2,7 +2,6 @@ import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Ty
 import { Link as RouterLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 
 const pages = ['בית', 'התאמות', 'פרופיל'];
 const routes = ['/', '/matches', '/profile'];
@@ -115,3 +114,5 @@ export const Navbar = () => {
     </AppBar>
   );
 };
+
+export default Navbar;
