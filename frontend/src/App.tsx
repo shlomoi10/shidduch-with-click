@@ -1,12 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Container } from '@mui/material';
 import { Provider } from 'react-redux';
-import Navbar from './components/Navbar';
+import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
+import AboutPage from './pages/AboutPage';
 import { store } from './store';
 import theme from './theme';
 
@@ -15,15 +15,16 @@ const App = () => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
-          <Container maxWidth={false} disableGutters>
-            <Navbar />
+        <Router basename="/shidduch-with-click">
+          <Layout>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegistrationPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </Container>
+          </Layout>
         </Router>
       </ThemeProvider>
     </Provider>
