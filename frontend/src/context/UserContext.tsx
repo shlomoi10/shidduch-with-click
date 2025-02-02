@@ -7,46 +7,6 @@ interface UserContextType {
   updateUserProfile: (updates: Partial<UserProfile>) => void;
 }
 
-const defaultUserProfile: UserProfile = {
-  personalDetails: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    gender: 'זכר',
-    dateOfBirth: '',
-    height: 0,
-    maritalStatus: 'רווק',
-    religiousStream: 'דתי לאומי',
-    origin: '',
-    parentsCity: '',
-    fatherOrigin: '',
-    motherOrigin: '',
-    occupation: '',
-    numberOfSiblings: 0,
-    numberOfMarriedSiblings: 0,
-    hobbies: [],
-    specialTalents: [],
-  },
-  education: {
-    type: 'male',
-    yeshivaKtana: '',
-    yeshivaGdola: '',
-    currentYeshiva: '',
-  },
-  email: '',
-  preferences: {
-    minAge: 18,
-    maxAge: 30,
-    minHeight: 150,
-    maxHeight: 190,
-    religiousStreams: ['דתי לאומי'],
-    origins: [],
-    location: '',
-    maritalStatus: ['רווק', 'רווקה'],
-  },
-};
-
 const UserContext = createContext<UserContextType>({
   userProfile: null,
   setUserProfile: () => {},
@@ -59,7 +19,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const updateUserProfile = (updates: Partial<UserProfile>) => {
     setUserProfile((prev) => {
       if (!prev) return null;
-      return { ...prev, ...updates };
+      return {
+        ...prev,
+        ...updates,
+      };
     });
   };
 
