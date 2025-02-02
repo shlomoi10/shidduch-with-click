@@ -4,23 +4,13 @@ import {
   Box,
   Button,
   Container,
-  Paper,
+  Grid,
   TextField,
   Typography,
-  MenuItem,
-  Grid,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useUserContext } from '../../context/UserContext';
 import RegistrationStepper from '../../components/RegistrationStepper';
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
-  marginTop: theme.spacing(4),
-  marginBottom: theme.spacing(4),
-  borderRadius: theme.spacing(2),
-  boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
-}));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -50,142 +40,132 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const ActionButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  padding: theme.spacing(1.5, 4),
-  borderRadius: '25px',
-  fontSize: '1.1rem',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-}));
-
 const EducationForm = () => {
   const navigate = useNavigate();
   const { userProfile, setUserProfile } = useUserContext();
   const [formData, setFormData] = useState({
-    type: userProfile?.education?.type || 'male',
-    yeshiva: userProfile?.education?.yeshiva || '',
-    kollel: userProfile?.education?.kollel || '',
-    degree: userProfile?.education?.degree || '',
-    currentStudy: userProfile?.education?.currentStudy || '',
+    yeshiva: '',
+    kollel: '',
+    seminary: '',
+    degree: '',
+    currentStudy: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (userProfile) {
+      const education =
+        userProfile.personalDetails.gender === 'זכר'
+          ? {
+              type: 'male' as const,
+              yeshiva: formData.yeshiva,
+              kollel: formData.kollel,
+              degree: formData.degree,
+              currentStudy: formData.currentStudy,
+            }
+          : {
+              type: 'female' as const,
+              seminary: formData.seminary,
+              degree: formData.degree,
+              currentStudy: formData.currentStudy,
+            };
+
       setUserProfile({
         ...userProfile,
-        education: {
-          ...userProfile.education,
-          ...formData,
-        },
+        education,
       });
-      navigate('/profile');
+      navigate('/register/complete');
     }
   };
 
   return (
     <Container maxWidth="md">
       <RegistrationStepper activeStep={2} />
-      <StyledPaper>
-        <Typography variant="h4" align="center" gutterBottom>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          mt: 4,
+          p: 4,
+          bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: 1,
+        }}
+      >
+        <Typography variant="h5" gutterBottom align="center">
           השכלה
         </Typography>
-        <Typography variant="body1" align="center" color="textSecondary" sx={{ mb: 4 }}>
-          ספר/י לנו על הרקע החינוכי שלך
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <StyledTextField
-                select
-                fullWidth
-                label="סוג השכלה"
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-              >
-                <MenuItem value="male">ישיבתי</MenuItem>
-                <MenuItem value="female">סמינר</MenuItem>
-                <MenuItem value="academic">אקדמי</MenuItem>
-              </StyledTextField>
-            </Grid>
-            {formData.type === 'male' && (
-              <>
-                <Grid item xs={12} sm={6}>
-                  <StyledTextField
-                    fullWidth
-                    label="ישיבה"
-                    value={formData.yeshiva}
-                    onChange={(e) =>
-                      setFormData({ ...formData, yeshiva: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <StyledTextField
-                    fullWidth
-                    label="כולל"
-                    value={formData.kollel}
-                    onChange={(e) =>
-                      setFormData({ ...formData, kollel: e.target.value })
-                    }
-                  />
-                </Grid>
-              </>
-            )}
-            {formData.type === 'female' && (
+        <Grid container spacing={3}>
+          {userProfile?.personalDetails.gender === 'זכר' ? (
+            <>
               <Grid item xs={12}>
                 <StyledTextField
+                  required
                   fullWidth
-                  label="סמינר"
+                  label="ישיבה"
                   value={formData.yeshiva}
                   onChange={(e) =>
                     setFormData({ ...formData, yeshiva: e.target.value })
                   }
                 />
               </Grid>
-            )}
-            {formData.type === 'academic' && (
               <Grid item xs={12}>
                 <StyledTextField
                   fullWidth
-                  label="תואר"
-                  value={formData.degree}
+                  label="כולל"
+                  value={formData.kollel}
                   onChange={(e) =>
-                    setFormData({ ...formData, degree: e.target.value })
+                    setFormData({ ...formData, kollel: e.target.value })
                   }
                 />
               </Grid>
-            )}
+            </>
+          ) : (
             <Grid item xs={12}>
               <StyledTextField
+                required
                 fullWidth
-                label="לימודים נוכחיים"
-                value={formData.currentStudy}
+                label="סמינר"
+                value={formData.seminary}
                 onChange={(e) =>
-                  setFormData({ ...formData, currentStudy: e.target.value })
+                  setFormData({ ...formData, seminary: e.target.value })
                 }
               />
             </Grid>
+          )}
+          <Grid item xs={12}>
+            <StyledTextField
+              fullWidth
+              label="תואר אקדמי"
+              value={formData.degree}
+              onChange={(e) =>
+                setFormData({ ...formData, degree: e.target.value })
+              }
+            />
           </Grid>
-          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
-            <ActionButton
-              variant="outlined"
-              color="primary"
-              onClick={() => navigate(-1)}
-            >
-              חזור
-            </ActionButton>
-            <ActionButton type="submit" variant="contained" color="primary">
-              סיום
-            </ActionButton>
-          </Box>
+          <Grid item xs={12}>
+            <StyledTextField
+              fullWidth
+              label="לימודים נוכחיים"
+              value={formData.currentStudy}
+              onChange={(e) =>
+                setFormData({ ...formData, currentStudy: e.target.value })
+              }
+            />
+          </Grid>
+        </Grid>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            sx={{ minWidth: 200 }}
+          >
+            המשך
+          </Button>
         </Box>
-      </StyledPaper>
+      </Box>
     </Container>
   );
 };
