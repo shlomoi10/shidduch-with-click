@@ -1,196 +1,213 @@
 import {
   Box,
-  Button,
+  Typography,
+  Paper,
+  Grid,
   Card,
   CardContent,
-  Grid,
-  Typography,
-  Rating,
+  CardMedia,
+  Button,
   Chip,
-  Avatar,
+  Stack,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { UserProfile } from '../../types/user';
 import { useUserContext } from '../../context/UserContext';
-import { useState } from 'react';
+import { UserProfile } from '../../types/user';
 
-const StyledCard = styled(Card)({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'transform 0.2s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-  },
-});
-
-const StyledRating = styled(Rating)({
-  '& .MuiRating-iconFilled': {
-    color: '#ff6d75',
-  },
-  '& .MuiRating-iconHover': {
-    color: '#ff3d47',
-  },
-});
-
-const StyledCardContent = styled(CardContent)({
-  flexGrow: 1,
-  direction: 'rtl',
-  textAlign: 'right',
-});
-
-const StyledChip = styled(Chip)({
-  margin: '4px',
-  direction: 'rtl',
-});
-
-// מוק דאטה להדגמה
-const mockMatches: UserProfile[] = [
-  {
-    email: 'user1@example.com',
-    personalDetails: {
-      firstName: 'ישראל',
-      lastName: 'כהן',
-      email: 'user1@example.com',
-      phone: '050-1234567',
-      gender: 'זכר',
-      dateOfBirth: new Date('1995-01-01'),
-      height: 175,
-      maritalStatus: 'רווק',
-      religiousStream: 'חרדי',
-      origin: 'ירושלים',
-      parentsCity: 'ירושלים',
-      fatherOrigin: 'ירושלים',
-      motherOrigin: 'ירושלים',
-      occupation: 'אברך',
-      numberOfSiblings: 5,
-      numberOfMarriedSiblings: 3,
-      hobbies: ['לימוד תורה', 'מוזיקה'],
-      specialTalents: ['זיכרון טוב'],
-    },
-    education: {
-      type: 'male',
-      yeshiva: 'פוניבז׳',
-      kollel: 'חזון איש',
-      currentStudy: 'גמרא',
-    },
-    preferences: {
-      minAge: 20,
-      maxAge: 25,
-      minHeight: 160,
-      maxHeight: 175,
-      religiousStreams: ['חרדי'],
-      origins: ['ירושלים'],
-      location: 'ירושלים',
-      maritalStatus: ['רווקה'],
-    },
-    settings: {
-      notifications: true,
-      privacy: true,
-      updates: true,
-    },
-  },
-  // ניתן להוסיף עוד פרופילים להדגמה
-];
+interface MatchProfile extends UserProfile {
+  id: string;
+  matchPercentage: number;
+}
 
 const Matches = () => {
   const { userProfile } = useUserContext();
-  const [showMore, setShowMore] = useState(false);
 
-  const calculateMatchScore = (match: UserProfile): number => {
-    if (!userProfile || !match) return 0;
+  // משתמשי דוגמה להצגת התאמות
+  const demoMatches: MatchProfile[] = [
+    {
+      id: '1',
+      email: 'rachel@example.com',
+      personalDetails: {
+        firstName: 'רחל',
+        lastName: 'כהן',
+        email: 'rachel@example.com',
+        phone: '050-1234567',
+        gender: 'נקבה',
+        dateOfBirth: new Date(1995, 5, 15),
+        height: 165,
+        maritalStatus: 'רווקה',
+        religiousStream: 'חרדי',
+        origin: 'ירושלים',
+        parentsCity: 'ירושלים',
+        fatherOrigin: 'מרוקו',
+        motherOrigin: 'תימן',
+        occupation: 'מורה',
+        numberOfSiblings: 5,
+        numberOfMarriedSiblings: 3,
+        hobbies: ['קריאה', 'אפייה'],
+        specialTalents: ['נגינה בפסנתר'],
+      },
+      education: {
+        type: 'female',
+        seminary: 'בית יעקב',
+        degree: 'תואר בחינוך',
+        currentStudy: 'הוראה',
+      },
+      preferences: {
+        minAge: 23,
+        maxAge: 28,
+        minHeight: 170,
+        maxHeight: 190,
+        maritalStatus: ['רווק'],
+        religiousStreams: ['חרדי'],
+        origins: ['ירושלים', 'בני ברק'],
+        location: 'ירושלים',
+      },
+      settings: {
+        notifications: true,
+        privacy: true,
+        updates: true,
+      },
+      matchPercentage: 95,
+    },
+    {
+      id: '2',
+      email: 'sarah@example.com',
+      personalDetails: {
+        firstName: 'שרה',
+        lastName: 'לוי',
+        email: 'sarah@example.com',
+        phone: '050-7654321',
+        gender: 'נקבה',
+        dateOfBirth: new Date(1997, 8, 20),
+        height: 160,
+        maritalStatus: 'רווקה',
+        religiousStream: 'חרדי',
+        origin: 'בני ברק',
+        parentsCity: 'בני ברק',
+        fatherOrigin: 'פולין',
+        motherOrigin: 'רומניה',
+        occupation: 'גננת',
+        numberOfSiblings: 7,
+        numberOfMarriedSiblings: 4,
+        hobbies: ['ציור', 'מוזיקה'],
+        specialTalents: ['ציור'],
+      },
+      education: {
+        type: 'female',
+        seminary: 'גייטסהד',
+        degree: 'תעודת הוראה',
+        currentStudy: 'חינוך מיוחד',
+      },
+      preferences: {
+        minAge: 24,
+        maxAge: 30,
+        minHeight: 165,
+        maxHeight: 185,
+        maritalStatus: ['רווק'],
+        religiousStreams: ['חרדי', 'ליטאי'],
+        origins: ['בני ברק', 'ירושלים'],
+        location: 'בני ברק',
+      },
+      settings: {
+        notifications: true,
+        privacy: true,
+        updates: false,
+      },
+      matchPercentage: 88,
+    },
+  ];
 
-    let score = 0;
-    const preferences = userProfile.preferences;
-    const matchDetails = match.personalDetails;
-
-    // גיל
-    const matchAge = new Date().getFullYear() - new Date(matchDetails.dateOfBirth).getFullYear();
-    if (matchAge >= preferences.minAge && matchAge <= preferences.maxAge) {
-      score += 2;
-    }
-
-    // גובה
-    if (matchDetails.height >= preferences.minHeight && matchDetails.height <= preferences.maxHeight) {
-      score += 1;
-    }
-
-    // זרם דתי
-    if (preferences.religiousStreams.includes(matchDetails.religiousStream)) {
-      score += 2;
-    }
-
-    return Math.min(5, score);
-  };
+  if (!userProfile) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Typography>יש להתחבר כדי לצפות בהתאמות</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, direction: 'rtl' }}>
-      <Typography variant="h5" gutterBottom align="right">
-        הצעות שידוך
-      </Typography>
-      <Grid container spacing={3}>
-        {mockMatches.slice(0, showMore ? undefined : 6).map((match, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <StyledCard>
-              <StyledCardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar
-                    src={`https://i.pravatar.cc/150?img=${index + 1}`}
-                    sx={{ width: 56, height: 56, ml: 2 }}
-                  />
-                  <Box>
-                    <Typography variant="h6">
-                      {match.personalDetails.firstName} {match.personalDetails.lastName}
-                    </Typography>
-                    <StyledRating
-                      value={calculateMatchScore(match)}
-                      readOnly
-                      icon={<FavoriteIcon fontSize="inherit" />}
-                      emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-                    />
-                  </Box>
-                </Box>
-                <Typography color="text.secondary" gutterBottom>
-                  גיל:{' '}
-                  {new Date().getFullYear() -
-                    new Date(match.personalDetails.dateOfBirth).getFullYear()}
-                </Typography>
-                <Typography color="text.secondary" gutterBottom>
-                  גובה: {match.personalDetails.height} ס"מ
-                </Typography>
-                <Box sx={{ mt: 2 }}>
-                  <StyledChip label={match.personalDetails.religiousStream} />
-                  <StyledChip label={match.personalDetails.maritalStatus} />
-                  {match.personalDetails.origin && (
-                    <StyledChip label={match.personalDetails.origin} />
-                  )}
-                </Box>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  fullWidth
-                  sx={{ mt: 2 }}
+    <Box sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h5" gutterBottom align="center">
+          התאמות מומלצות
+        </Typography>
+        <Grid container spacing={3}>
+          {demoMatches.map((match) => (
+            <Grid item xs={12} md={6} key={match.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                }}
+              >
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    zIndex: 1,
+                    bgcolor: 'primary.main',
+                    color: 'white',
+                    borderRadius: '20px',
+                    px: 2,
+                    py: 0.5,
+                  }}
                 >
-                  צפה בפרופיל מלא
-                </Button>
-              </StyledCardContent>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
-      {mockMatches.length > 6 && (
-        <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? 'הצג פחות' : 'חפש עוד התאמות'}
-          </Button>
-        </Box>
-      )}
+                  <Typography variant="body2">
+                    {match.matchPercentage}% התאמה
+                  </Typography>
+                </Box>
+                <CardMedia
+                  component="div"
+                  sx={{
+                    pt: '56.25%',
+                    position: 'relative',
+                    bgcolor: 'grey.200',
+                  }}
+                />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography gutterBottom variant="h6" component="h2">
+                    {match.personalDetails.firstName} {match.personalDetails.lastName}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    גיל:{' '}
+                    {new Date().getFullYear() -
+                      (typeof match.personalDetails.dateOfBirth === 'string'
+                        ? new Date(match.personalDetails.dateOfBirth).getFullYear()
+                        : match.personalDetails.dateOfBirth.getFullYear())}
+                  </Typography>
+                  <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                    <Chip
+                      label={match.personalDetails.religiousStream}
+                      size="small"
+                    />
+                    <Chip label={match.personalDetails.origin} size="small" />
+                    <Chip
+                      label={`${match.personalDetails.height} ס"מ`}
+                      size="small"
+                    />
+                  </Stack>
+                  <Typography variant="body2" paragraph>
+                    {match.education?.type === 'female'
+                      ? match.education.seminary
+                      : match.education?.yeshiva}
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    {match.personalDetails.occupation}
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Button variant="contained" fullWidth>
+                      צפייה בפרופיל
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
     </Box>
   );
 };

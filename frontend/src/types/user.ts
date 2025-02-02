@@ -2,7 +2,7 @@ export type Gender = 'זכר' | 'נקבה';
 
 export type MaritalStatus = 'רווק' | 'רווקה' | 'גרוש' | 'גרושה' | 'אלמן' | 'אלמנה';
 
-export type ReligiousStream = 
+export type ReligiousStream =
   | 'חרדי'
   | 'דתי לאומי'
   | 'חרדי לאומי'
@@ -32,24 +32,32 @@ export interface PersonalDetails {
   specialTalents: string[];
 }
 
-export interface Education {
-  type: 'male' | 'female' | 'academic';
-  yeshiva?: string;
+export interface MaleEducation {
+  type: 'male';
+  yeshiva: string;
   kollel?: string;
-  seminary?: string;
   degree?: string;
-  currentStudy: string;
+  currentStudy?: string;
 }
+
+export interface FemaleEducation {
+  type: 'female';
+  seminary: string;
+  degree?: string;
+  currentStudy?: string;
+}
+
+export type Education = MaleEducation | FemaleEducation;
 
 export interface Preferences {
   minAge: number;
   maxAge: number;
   minHeight: number;
   maxHeight: number;
+  maritalStatus: MaritalStatus[];
   religiousStreams: ReligiousStream[];
   origins: string[];
   location: string;
-  maritalStatus: MaritalStatus[];
 }
 
 export interface UserSettings {
@@ -61,7 +69,7 @@ export interface UserSettings {
 export interface UserProfile {
   email: string;
   personalDetails: PersonalDetails;
-  education: Education;
+  education?: Education;
   preferences: Preferences;
   settings: UserSettings;
 }
