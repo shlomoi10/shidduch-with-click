@@ -52,9 +52,16 @@ export interface Preferences {
   maritalStatus: MaritalStatus[];
 }
 
+export interface UserSettings {
+  notifications: boolean;
+  privacy: boolean;
+  updates: boolean;
+}
+
 export interface UserProfile {
   email: string;
   personalDetails: PersonalDetails;
   education: Education;
   preferences: Preferences;
+  settings: UserSettings;
 }

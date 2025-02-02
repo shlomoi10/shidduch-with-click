@@ -86,6 +86,11 @@ const mockMatches: UserProfile[] = [
       location: 'ירושלים',
       maritalStatus: ['רווקה'],
     },
+    settings: {
+      notifications: true,
+      privacy: true,
+      updates: true,
+    },
   },
   // ניתן להוסיף עוד פרופילים להדגמה
 ];
