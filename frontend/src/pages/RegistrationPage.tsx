@@ -16,6 +16,7 @@ import {
   Paper,
   SelectChangeEvent,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface UserProfile {
   id?: string;
@@ -30,6 +31,21 @@ interface UserProfile {
   education: string;
   religiousLevel: string;
 }
+
+const StyledTextField = styled(TextField)({
+  '& .MuiInputBase-input': {
+    textAlign: 'right',
+    direction: 'rtl',
+  },
+  '& .MuiInputLabel-root': {
+    transformOrigin: 'right',
+    right: 0,
+    left: 'auto',
+  },
+  '& .MuiInputLabel-shrink': {
+    transform: 'translate(0, -1.5px) scale(0.75)',
+  },
+});
 
 export const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -81,29 +97,27 @@ export const RegistrationPage = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="firstName"
                 label="שם פרטי"
                 value={profile.firstName}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="lastName"
                 label="שם משפחה"
                 value={profile.lastName}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="email"
@@ -111,7 +125,6 @@ export const RegistrationPage = () => {
                 type="email"
                 value={profile.email}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -130,7 +143,7 @@ export const RegistrationPage = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="age"
@@ -138,29 +151,26 @@ export const RegistrationPage = () => {
                 type="number"
                 value={profile.age}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="city"
                 label="עיר מגורים"
                 value={profile.city}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="education"
                 label="השכלה"
                 value={profile.education}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -180,18 +190,17 @@ export const RegistrationPage = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <StyledTextField
                 required
                 fullWidth
                 name="occupation"
                 label="עיסוק"
                 value={profile.occupation}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <StyledTextField
                 fullWidth
                 name="description"
                 label="תיאור קצר על עצמך"
@@ -199,7 +208,6 @@ export const RegistrationPage = () => {
                 rows={4}
                 value={profile.description}
                 onChange={handleChange}
-                dir="rtl"
               />
             </Grid>
           </Grid>

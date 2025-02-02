@@ -102,58 +102,30 @@ const HomePage = () => {
           >
             <Grid container spacing={6} alignItems="center">
               <Grid item xs={12} md={7}>
-                <Typography 
-                  variant="h1" 
-                  sx={{ 
-                    fontWeight: 700,
-                    fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
-                    marginBottom: 2,
-                  }}
-                >
-                  שידוך עם קליק
-                </Typography>
-                <Typography 
-                  variant="h2"
-                  sx={{ 
-                    fontSize: { xs: '1.5rem', md: '2rem' },
-                    marginBottom: 4,
-                    opacity: 0.9,
-                  }}
-                >
-                  למצוא קליק בקליק
-                </Typography>
-                <Typography 
-                  variant="h5"
-                  sx={{ 
-                    marginBottom: 4,
-                    opacity: 0.9,
-                    maxWidth: '600px',
-                  }}
-                >
-                  הדרך המודרנית למצוא את השידוך המושלם, בשילוב מושלם בין טכנולוגיה למסורת
-                </Typography>
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Typography variant="h1">שידוך עם קליק</Typography>
+                  <Typography variant="h2">למצוא קליק בקליק</Typography>
+                  <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
                     <Button
                       component={RouterLink}
                       to="/register"
                       variant="contained"
                       size="large"
                       sx={{
-                        backgroundColor: 'white',
-                        color: 'primary.main',
-                        padding: '12px 32px',
+                        px: 4,
+                        py: 1.5,
                         fontSize: '1.1rem',
+                        fontWeight: 600,
                         '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          transform: 'translateY(-2px)',
                         },
                       }}
                     >
-                      הרשמה עכשיו
+                      הרשמה
                     </Button>
                     <Button
                       component={RouterLink}
@@ -161,19 +133,41 @@ const HomePage = () => {
                       variant="outlined"
                       size="large"
                       sx={{
-                        borderColor: 'white',
-                        color: 'white',
-                        padding: '12px 32px',
+                        px: 4,
+                        py: 1.5,
                         fontSize: '1.1rem',
+                        fontWeight: 600,
+                        color: 'white',
+                        borderColor: 'white',
                         '&:hover': {
                           borderColor: 'white',
                           backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          transform: 'translateY(-2px)',
                         },
                       }}
                     >
-                      למידע נוסף
+                      קרא עוד
                     </Button>
                   </Box>
+                </motion.div>
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <Box
+                    component="img"
+                    src="logo-new.svg"
+                    alt="שידוך עם קליק"
+                    sx={{
+                      width: '100%',
+                      maxWidth: 400,
+                      height: 'auto',
+                      filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))',
+                    }}
+                  />
                 </motion.div>
               </Grid>
             </Grid>

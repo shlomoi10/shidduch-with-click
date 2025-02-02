@@ -1,6 +1,22 @@
 import { useState } from 'react';
 import { Container, Typography, Paper, Box, TextField, Button, Alert } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+
+const StyledTextField = styled(TextField)({
+  '& .MuiInputBase-input': {
+    textAlign: 'right',
+    direction: 'rtl',
+  },
+  '& .MuiInputLabel-root': {
+    transformOrigin: 'right',
+    right: 0,
+    left: 'auto',
+  },
+  '& .MuiInputLabel-shrink': {
+    transform: 'translate(0, -1.5px) scale(0.75)',
+  },
+});
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +24,7 @@ const LoginPage = () => {
     password: ''
   });
   const [showCyberAlert, setShowCyberAlert] = useState(false);
+  const [errors, setErrors] = useState({ email: '', password: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -17,9 +34,21 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setShowCyberAlert(true);
+    
+    // בדיקת תקינות
+    const newErrors = {
+      email: formData.email ? '' : 'שדה חובה',
+      password: formData.password ? '' : 'שדה חובה'
+    };
+    
+    setErrors(newErrors);
+
+    // אם אין שגיאות, נמשיך בתהליך ההתחברות
+    if (!newErrors.email && !newErrors.password) {
+      setShowCyberAlert(true);
+    }
   };
 
   if (showCyberAlert) {
@@ -58,7 +87,7 @@ const LoginPage = () => {
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          <TextField
+          <StyledTextField
             required
             fullWidth
             label="כתובת מייל"
@@ -66,10 +95,12 @@ const LoginPage = () => {
             type="email"
             value={formData.email}
             onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
             sx={{ mb: 2 }}
           />
           
-          <TextField
+          <StyledTextField
             required
             fullWidth
             label="סיסמה"
@@ -77,6 +108,8 @@ const LoginPage = () => {
             type="password"
             value={formData.password}
             onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
             sx={{ mb: 3 }}
           />
 
