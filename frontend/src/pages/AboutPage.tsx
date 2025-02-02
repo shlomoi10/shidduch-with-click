@@ -1,78 +1,87 @@
-import { Container, Typography, Paper, Box, Grid } from '@mui/material';
+import { Container, Typography, Paper } from '@mui/material';
+import { motion } from 'framer-motion';
 import { styled } from '@mui/material/styles';
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+const StorySection = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
-  marginTop: theme.spacing(4),
   marginBottom: theme.spacing(4),
-  borderRadius: theme.spacing(2),
-  boxShadow: theme.shadows[3],
+  borderRadius: theme.shape.borderRadius * 2,
+  background: '#fff',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
 }));
 
 const AboutPage = () => {
   return (
-    <Container maxWidth="lg">
-      <StyledPaper>
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            אודות שידוך בקליק
+    <Container maxWidth="md" sx={{ py: 8 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <Typography variant="h2" gutterBottom align="center" sx={{ mb: 6 }}>
+          הסיפור שלנו
+        </Typography>
+
+        <StorySection>
+          <Typography variant="h5" gutterBottom color="primary">
+            איך הכל התחיל
           </Typography>
-          <Typography variant="h5" color="text.secondary" sx={{ mb: 4 }}>
-            למצוא קליק בקליק
+          <Typography paragraph>
+            שידוך עם קליק הוקם מתוך חזון לחבר בין מסורת לטכנולוגיה, ולהפוך את תהליך השידוך למותאם יותר לעידן המודרני תוך שמירה על ערכי המסורת.
           </Typography>
-        </Box>
+          <Typography paragraph>
+            הרעיון נולד מתוך התבוננות במציאות המשתנה של עולם השידוכים המסורתי. ראינו כיצד צעירים רבים מתקשים למצוא את זיווגם בדרכים המסורתיות, בעוד שהטכנולוגיה המודרנית מציעה פתרונות חדשניים שעדיין לא הגיעו לעולם השידוכים.
+          </Typography>
+        </StorySection>
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              החזון שלנו
-            </Typography>
-            <Typography paragraph>
-              שידוך בקליק הוקם מתוך חזון לחבר בין מסורת לטכנולוגיה, ולהפוך את תהליך השידוך למותאם יותר לעידן המודרני תוך שמירה על ערכי המסורת.
-            </Typography>
-            <Typography paragraph>
-              אנו מאמינים שבעזרת כלים טכנולוגיים מתקדמים, נוכל לסייע לרבים למצוא את זיווגם בדרך יעילה, מכבדת ומותאמת אישית.
-            </Typography>
-          </Grid>
+        <StorySection>
+          <Typography variant="h5" gutterBottom color="primary">
+            האתגרים בדרך
+          </Typography>
+          <Typography paragraph>
+            בתחילת הדרך, נתקלנו באתגרים רבים. היה עלינו לגשר בין העולם המסורתי לבין הטכנולוגיה המודרנית, תוך שמירה על כבוד המסורת והערכים היהודיים. חששנו שהקהילה לא תקבל בברכה את השילוב הזה.
+          </Typography>
+          <Typography paragraph>
+            אבל לשמחתנו, גילינו שיש צימאון אמיתי לפתרון שיחבר בין העולמות. ראינו כיצד רבנים ומנהיגי קהילה מבינים את הצורך בהתאמת תהליך השידוכים לעידן המודרני, תוך שמירה על הערכים המסורתיים.
+          </Typography>
+        </StorySection>
 
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              הערכים שלנו
-            </Typography>
-            <Typography component="div">
-              <ul>
-                <li>
-                  <Typography paragraph>
-                    <strong>צניעות ומסורת:</strong> שמירה על ערכי המסורת היהודית תוך התאמה לעידן המודרני
-                  </Typography>
-                </li>
-                <li>
-                  <Typography paragraph>
-                    <strong>פרטיות ואבטחה:</strong> הגנה מלאה על פרטיות המשתמשים ואבטחת המידע
-                  </Typography>
-                </li>
-                <li>
-                  <Typography paragraph>
-                    <strong>התאמה אישית:</strong> מערכת חכמה המותאמת לצרכים האישיים של כל משתמש
-                  </Typography>
-                </li>
-              </ul>
-            </Typography>
-          </Grid>
+        <StorySection>
+          <Typography variant="h5" gutterBottom color="primary">
+            החזון שלנו
+          </Typography>
+          <Typography paragraph>
+            אנחנו מאמינים שתהליך מציאת הזיווג צריך להיות נגיש, יעיל ומכבד. החזון שלנו הוא ליצור פלטפורמה שתשלב את היתרונות של הטכנולוגיה המודרנית עם החכמה והמסורת של עולם השידוכים היהודי.
+          </Typography>
+          <Typography paragraph>
+            אנחנו שואפים ליצור קהילה תומכת ומכבדת, שבה כל אחד יכול למצוא את הזיווג המתאים לו בדרך המשלבת חדשנות עם מסורת.
+          </Typography>
+        </StorySection>
 
-          <Grid item xs={12}>
-            <Typography variant="h5" gutterBottom>
-              איך זה עובד?
-            </Typography>
-            <Typography paragraph>
-              הפלטפורמה שלנו משלבת טכנולוגיה מתקדמת עם גישה אישית ומסורתית. המשתמשים יוצרים פרופיל אישי, מציינים את העדפותיהם ומקבלים הצעות שידוך מותאמות אישית.
-            </Typography>
-            <Typography>
-              כל התהליך מלווה בדיסקרטיות מלאה ובהתאם לערכי ההלכה והמסורת, תוך שימת דגש על כבוד הדדי ורצינות בתהליך השידוך.
-            </Typography>
-          </Grid>
-        </Grid>
-      </StyledPaper>
+        <StorySection>
+          <Typography variant="h5" gutterBottom color="primary">
+            ההישגים שלנו
+          </Typography>
+          <Typography paragraph>
+            מאז הקמת האתר, זכינו לראות מאות זוגות מוצאים את דרכם זה לזו דרך הפלטפורמה שלנו. כל סיפור הצלחה מחזק את האמונה שלנו בדרך ובחזון.
+          </Typography>
+          <Typography paragraph>
+            אנחנו גאים במיוחד בכך שהצלחנו ליצור מערכת שמשרתת את כל גווני החברה היהודית, תוך שמירה על הערכים והמסורת של כל קהילה וקהילה.
+          </Typography>
+        </StorySection>
+
+        <StorySection>
+          <Typography variant="h5" gutterBottom color="primary">
+            העתיד
+          </Typography>
+          <Typography paragraph>
+            אנחנו ממשיכים לפתח ולשפר את הפלטפורמה שלנו, תוך הקשבה מתמדת לצרכי המשתמשים שלנו ולהנחיות הרבנים המלווים אותנו.
+          </Typography>
+          <Typography paragraph>
+            החזון שלנו הוא להפוך את שידוך עם קליק לפלטפורמה המובילה בעולם השידוכים היהודי, תוך שמירה על הערכים והמסורת שעליהם גדלנו.
+          </Typography>
+        </StorySection>
+      </motion.div>
     </Container>
   );
 };
