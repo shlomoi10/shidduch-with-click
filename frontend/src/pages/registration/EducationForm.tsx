@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { MaleEducation, FemaleEducation } from '../../types/registration';
+import { Education, MaleEducation, FemaleEducation } from '../../types/user';
 import { useUserContext } from '../../context/UserContext';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -44,31 +44,28 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 const EducationForm = () => {
   const navigate = useNavigate();
   const { userProfile, updateUserProfile } = useUserContext();
-  const [isMale] = useState<boolean>(true);
+  const [isMale] = useState<boolean>(userProfile?.personalDetails.gender === 'זכר');
 
   const [maleEducation, setMaleEducation] = useState<MaleEducation>({
-    elementarySchool: '',
-    smallYeshiva: '',
-    bigYeshiva: '',
-    currentYeshiva: '',
-    yearsInCurrentYeshiva: '',
+    type: 'male',
+    yeshiva: '',
+    kollel: '',
+    degree: '',
+    currentStudy: '',
   });
 
   const [femaleEducation, setFemaleEducation] = useState<FemaleEducation>({
-    elementarySchool: '',
-    highSchool: '',
+    type: 'female',
     seminary: '',
-    currentOccupation: '',
+    degree: '',
+    currentStudy: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (userProfile) {
-      const updatedProfile = {
-        ...userProfile,
-        education: isMale ? maleEducation : femaleEducation,
-      };
-      updateUserProfile(updatedProfile);
+      const education: Education = isMale ? maleEducation : femaleEducation;
+      updateUserProfile({ education });
       navigate('/register/complete');
     }
   };
@@ -86,46 +83,21 @@ const EducationForm = () => {
                 <Grid item xs={12}>
                   <StyledTextField
                     fullWidth
-                    label="בית ספר יסודי"
-                    name="elementarySchool"
-                    value={maleEducation.elementarySchool}
-                    onChange={(e) => setMaleEducation({ ...maleEducation, elementarySchool: e.target.value })}
+                    label="ישיבה"
+                    value={maleEducation.yeshiva}
+                    onChange={(e) =>
+                      setMaleEducation({ ...maleEducation, yeshiva: e.target.value })
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <StyledTextField
                     fullWidth
-                    label="ישיבה קטנה"
-                    name="smallYeshiva"
-                    value={maleEducation.smallYeshiva}
-                    onChange={(e) => setMaleEducation({ ...maleEducation, smallYeshiva: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
-                    label="ישיבה גדולה"
-                    name="bigYeshiva"
-                    value={maleEducation.bigYeshiva}
-                    onChange={(e) => setMaleEducation({ ...maleEducation, bigYeshiva: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
-                    label="ישיבה נוכחית"
-                    name="currentYeshiva"
-                    value={maleEducation.currentYeshiva}
-                    onChange={(e) => setMaleEducation({ ...maleEducation, currentYeshiva: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
-                    label="שנים בישיבה נוכחית"
-                    name="yearsInCurrentYeshiva"
-                    value={maleEducation.yearsInCurrentYeshiva}
-                    onChange={(e) => setMaleEducation({ ...maleEducation, yearsInCurrentYeshiva: e.target.value })}
+                    label="כולל"
+                    value={maleEducation.kollel}
+                    onChange={(e) =>
+                      setMaleEducation({ ...maleEducation, kollel: e.target.value })
+                    }
                   />
                 </Grid>
               </>
@@ -134,49 +106,46 @@ const EducationForm = () => {
                 <Grid item xs={12}>
                   <StyledTextField
                     fullWidth
-                    label="בית ספר יסודי"
-                    name="elementarySchool"
-                    value={femaleEducation.elementarySchool}
-                    onChange={(e) => setFemaleEducation({ ...femaleEducation, elementarySchool: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
-                    label="תיכון"
-                    name="highSchool"
-                    value={femaleEducation.highSchool}
-                    onChange={(e) => setFemaleEducation({ ...femaleEducation, highSchool: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
                     label="סמינר"
-                    name="seminary"
                     value={femaleEducation.seminary}
-                    onChange={(e) => setFemaleEducation({ ...femaleEducation, seminary: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <StyledTextField
-                    fullWidth
-                    label="עיסוק נוכחי"
-                    name="currentOccupation"
-                    value={femaleEducation.currentOccupation}
-                    onChange={(e) => setFemaleEducation({ ...femaleEducation, currentOccupation: e.target.value })}
+                    onChange={(e) =>
+                      setFemaleEducation({ ...femaleEducation, seminary: e.target.value })
+                    }
                   />
                 </Grid>
               </>
             )}
+            <Grid item xs={12}>
+              <StyledTextField
+                fullWidth
+                label="תואר"
+                value={isMale ? maleEducation.degree : femaleEducation.degree}
+                onChange={(e) =>
+                  isMale
+                    ? setMaleEducation({ ...maleEducation, degree: e.target.value })
+                    : setFemaleEducation({ ...femaleEducation, degree: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledTextField
+                fullWidth
+                label="לימודים נוכחיים"
+                value={isMale ? maleEducation.currentStudy : femaleEducation.currentStudy}
+                onChange={(e) =>
+                  isMale
+                    ? setMaleEducation({ ...maleEducation, currentStudy: e.target.value })
+                    : setFemaleEducation({ ...femaleEducation, currentStudy: e.target.value })
+                }
+              />
+            </Grid>
           </Grid>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               size="large"
-              sx={{ minWidth: 200 }}
             >
               המשך
             </Button>
