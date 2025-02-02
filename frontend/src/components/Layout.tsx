@@ -46,7 +46,7 @@ const Layout = ({ children }: Props) => {
           <Container maxWidth="lg">
             <Toolbar disableGutters sx={{ minHeight: { xs: 64, md: 72 } }}>
               <RouterLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                <Logo src="/logo.svg" alt="שידוך עם קליק" />
+                <Logo src="/logo-new.svg" alt="שידוך עם קליק" />
                 <Typography
                   variant="h6"
                   sx={{
