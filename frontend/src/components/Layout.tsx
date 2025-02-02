@@ -1,151 +1,162 @@
-import { ReactNode } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   AppBar,
   Box,
-  Button,
-  Container,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Toolbar,
   Typography,
-  Link,
   useScrollTrigger,
-  Slide,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import InfoIcon from '@mui/icons-material/Info';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import LoginIcon from '@mui/icons-material/Login';
+import { useUserContext } from '../context/UserContext';
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  boxShadow: theme.shadows[4],
-  transition: 'all 0.3s ease',
-}));
-
-const Logo = styled('img')({
-  height: 40,
-  marginRight: 8,
-});
-
-function HideOnScroll(props: { children: ReactNode }) {
-  const trigger = useScrollTrigger();
-
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      <div>{props.children}</div>
-    </Slide>
-  );
+interface MenuItemType {
+  text: string;
+  path: string;
+  icon: JSX.Element;
+  requiresAuth?: boolean;
 }
+
+const drawerWidth = 240;
 
 const Layout = ({ children }: Props) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { userProfile } = useUserContext();
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+  });
+
+  const menuItems: MenuItemType[] = [
+    { text: 'דף הבית', path: '/', icon: <HomeIcon /> },
+    { text: 'אודות', path: '/about', icon: <InfoIcon /> },
+    ...(userProfile
+      ? [
+          { text: 'פרופיל', path: '/profile', icon: <PersonIcon /> },
+          { text: 'התאמות', path: '/matches', icon: <FavoriteIcon /> },
+        ]
+      : [{ text: 'התחברות', path: '/login', icon: <LoginIcon /> }]),
+  ];
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        שידוך בקליק
+      </Typography>
+      <Divider />
+      <List>
+        {menuItems.map((item) => (
+          <ListItem
+            key={item.text}
+            component={RouterLink}
+            to={item.path}
+            sx={{
+              color: 'inherit',
+              textDecoration: 'none',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
   return (
-    <Box>
-      <HideOnScroll>
-        <StyledAppBar position="fixed">
-          <Container maxWidth="lg">
-            <Toolbar disableGutters sx={{ minHeight: { xs: 64, md: 72 } }}>
-              <RouterLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                <Logo src="logo-new.svg" alt="שידוך עם קליק" />
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: 'white',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    marginRight: 2,
-                    fontSize: { xs: '1.1rem', md: '1.3rem' },
-                  }}
-                >
-                  שידוך עם קליק
-                </Typography>
-              </RouterLink>
-
-              <Box sx={{ flexGrow: 1 }} />
-
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: { xs: 1, md: 2 },
-                '& .MuiButton-root': {
-                  fontSize: { xs: '0.9rem', md: '1rem' },
-                  transition: 'all 0.2s ease-in-out',
-                  minWidth: { xs: 'auto', md: '100px' },
-                  padding: { xs: '6px 12px', md: '8px 16px' },
-                }
-              }}>
-                <Button
-                  component={RouterLink}
-                  to="/about"
-                  sx={{
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  אודות
-                </Button>
-                <Button
-                  component={RouterLink}
-                  to="/login"
-                  sx={{
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  התחברות
-                </Button>
-                <Button
-                  component={RouterLink}
-                  to="/register"
-                  variant="contained"
-                  color="secondary"
-                  sx={{
-                    borderRadius: '20px',
-                    padding: { xs: '6px 16px', md: '8px 24px' },
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  הרשמה
-                </Button>
-              </Box>
-            </Toolbar>
-          </Container>
-        </StyledAppBar>
-      </HideOnScroll>
-      <Toolbar sx={{ minHeight: { xs: 64, md: 72 } }} /> {/* Spacer */}
-      
-      <Box component="main">
-        {children}
-      </Box>
-
-      <Box
-        component="footer"
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
         sx={{
-          py: 4,
-          bgcolor: 'background.paper',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-          mt: 8,
+          backgroundColor: trigger ? 'background.default' : 'transparent',
+          boxShadow: trigger ? 1 : 'none',
+          transition: 'all 0.3s',
         }}
       >
-        <Container maxWidth="lg">
-          <Typography variant="body2" color="text.secondary" align="center">
-            {'Copyright '}
-            <Link color="inherit" component={RouterLink} to="/">
-              שידוך עם קליק
-            </Link>{' '}
-            {new Date().getFullYear()}
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            sx={{ flexGrow: 1 }}
+          >
+            שידוך בקליק
           </Typography>
-        </Container>
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            {menuItems.map((item) => (
+              <RouterLink
+                key={item.text}
+                to={item.path}
+                style={{ textDecoration: 'none', color: 'inherit', marginLeft: '1rem' }}
+              >
+                {item.text}
+              </RouterLink>
+            ))}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Box component="nav">
+        <Drawer
+          variant="temporary"
+          anchor="right"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          mt: { xs: 7, sm: 8 },
+        }}
+      >
+        {children}
       </Box>
     </Box>
   );
