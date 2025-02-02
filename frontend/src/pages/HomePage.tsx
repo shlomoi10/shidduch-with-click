@@ -31,11 +31,14 @@ const HeroSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ContentWrapper = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  zIndex: 2,
-  maxWidth: 800,
-  margin: '0 auto',
+const ContentWrapper = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '80vh',
+  padding: '2rem',
+  textAlign: 'center',
 }));
 
 const FeatureSection = styled(Box)(({ theme }) => ({

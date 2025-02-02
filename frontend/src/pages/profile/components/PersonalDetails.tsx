@@ -1,6 +1,5 @@
 import { Box, Typography, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { PersonalDetails as PersonalDetailsType } from '../../../types/user';
 import { useUserContext } from '../../../context/UserContext';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

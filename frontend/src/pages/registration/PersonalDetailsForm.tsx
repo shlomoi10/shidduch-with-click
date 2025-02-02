@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { PersonalDetails } from '../../types/registration';
+import { PersonalDetails } from '../../types/user';
 import { useUserContext } from '../../context/UserContext';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -72,11 +72,7 @@ const PersonalDetailsForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (userProfile) {
-      const updatedProfile = {
-        ...userProfile,
-        personalDetails: formData,
-      };
-      updateUserProfile(updatedProfile);
+      updateUserProfile({ personalDetails: formData });
       navigate('/register/education');
     }
   };

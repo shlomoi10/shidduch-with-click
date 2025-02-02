@@ -133,12 +133,20 @@ const InitialRegistrationPage = () => {
           hobbies: [],
           specialTalents: [],
         },
-        education: {
-          type: formData.gender === 'זכר' ? 'male' : 'female',
-          yeshivaKtana: '',
-          yeshivaGdola: '',
-          currentYeshiva: '',
-        },
+        education: formData.gender === 'זכר' 
+          ? {
+              type: 'male',
+              yeshiva: '',
+              kollel: '',
+              degree: '',
+              currentStudy: '',
+            }
+          : {
+              type: 'female',
+              seminary: '',
+              degree: '',
+              currentStudy: '',
+            },
         preferences: {
           minAge: 18,
           maxAge: 30,
