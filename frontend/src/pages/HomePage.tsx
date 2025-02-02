@@ -1,22 +1,29 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Button,
   Container,
+  Grid,
   Typography,
 } from '@mui/material';
-import { motion } from 'framer-motion';
-import { styled } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/material/styles';
+import { useUserContext } from '../context/UserContext';
 
-const HeroSection = styled(Box)(({ theme }) => ({
-  minHeight: '80vh',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
-  color: theme.palette.common.white,
-  padding: theme.spacing(4),
-  textAlign: 'center',
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const StyledHeroSection = styled(Box)(({ theme }) => ({
+  background: 'linear-gradient(45deg, #6B8E23 30%, #556B2F 90%)',
+  padding: theme.spacing(15, 0),
+  color: '#fff',
   position: 'relative',
   overflow: 'hidden',
   '&::before': {
@@ -26,198 +33,161 @@ const HeroSection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.3)',
-    zIndex: 1,
+    background:
+      'url("/hero-pattern.png") center center/cover no-repeat',
+    opacity: 0.1,
   },
 }));
 
-const ContentWrapper = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '80vh',
-  padding: '2rem',
-  textAlign: 'center',
-}));
+const AnimatedBox = styled(Box)`
+  animation: ${fadeIn} 1s ease-out;
+`;
 
-const FeatureSection = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(8, 0),
-  backgroundColor: theme.palette.background.paper,
+const FeatureCard = styled(Box)(({ theme }) => ({
+  background: '#fff',
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(4),
+  textAlign: 'center',
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-10px)',
+  },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  marginRight: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  textTransform: 'none',
-  fontSize: '1.1rem',
+  borderRadius: '25px',
   padding: theme.spacing(1.5, 4),
-  '&.primary': {
-    backgroundColor: 'white',
-    color: theme.palette.primary.main,
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    },
-  },
-  '&.secondary': {
-    borderColor: 'white',
-    color: 'white',
-    '&:hover': {
-      borderColor: 'rgba(255, 255, 255, 0.9)',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
+  fontSize: '1.1rem',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.05)',
   },
 }));
 
 const HomePage = () => {
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const { userProfile } = useUserContext();
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3 },
+  const features = [
+    {
+      title: 'התאמה מדויקת',
+      description: 'אלגוריתם חכם המתאים שידוכים על פי קריטריונים מדויקים',
+      icon: '🎯',
     },
-  };
+    {
+      title: 'פרטיות מלאה',
+      description: 'שמירה על פרטיות המשתמשים ואבטחת מידע מתקדמת',
+      icon: '🔒',
+    },
+    {
+      title: 'תמיכה אישית',
+      description: 'צוות תמיכה מקצועי זמין לכל שאלה או בקשה',
+      icon: '💬',
+    },
+  ];
 
   return (
     <Box>
-      <HeroSection>
-        <ContentWrapper>
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-          >
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h2"
-                component="h1"
-                gutterBottom
-                sx={{
-                  fontWeight: 'bold',
-                  mb: 4,
-                  fontSize: { xs: '2.5rem', md: '3.75rem' },
-                }}
-              >
-                מצאו את השידוך המושלם
-              </Typography>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Typography
-                variant="h5"
-                sx={{
-                  mb: 6,
-                  opacity: 0.9,
-                  fontSize: { xs: '1.2rem', md: '1.5rem' },
-                }}
-              >
-                הפלטפורמה המובילה למציאת זיווג בדרך היהודית המסורתית
-              </Typography>
-            </motion.div>
-
-            <Box sx={{ mt: 4 }}>
-              <RouterLink to="/register" style={{ textDecoration: 'none' }}>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <StyledButton
-                    variant="contained"
-                    className="primary"
-                  >
-                    הרשמה
-                  </StyledButton>
-                </motion.div>
-              </RouterLink>
-
-              <RouterLink to="/login" style={{ textDecoration: 'none' }}>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <StyledButton
-                    variant="outlined"
-                    className="secondary"
-                  >
-                    התחברות
-                  </StyledButton>
-                </motion.div>
-              </RouterLink>
-            </Box>
-          </motion.div>
-        </ContentWrapper>
-      </HeroSection>
-
-      <FeatureSection>
-        <Container>
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-          >
-            <Typography
-              variant="h3"
-              component="h2"
-              align="center"
-              gutterBottom
-              sx={{ mb: 6 }}
-            >
-              למה לבחור בנו?
-            </Typography>
-
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' },
-                gap: 4,
-              }}
-            >
-              {[
-                {
-                  title: 'התאמה מדויקת',
-                  description: 'אלגוריתם חכם המתאים שידוכים על פי קריטריונים מדויקים',
-                },
-                {
-                  title: 'ליווי אישי',
-                  description: 'צוות מקצועי שמלווה אתכם לאורך כל הדרך',
-                },
-                {
-                  title: 'פרטיות מלאה',
-                  description: 'שמירה קפדנית על פרטיות המשתמשים',
-                },
-              ].map((feature, index) => (
-                <motion.div key={index} variants={itemVariants}>
-                  <Box
-                    sx={{
-                      textAlign: 'center',
-                      p: 3,
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography variant="h5" component="h3" gutterBottom>
-                      {feature.title}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      {feature.description}
-                    </Typography>
+      <StyledHeroSection>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <AnimatedBox>
+                <Typography
+                  variant="h2"
+                  component="h1"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 'bold',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  מצא את הזיווג המושלם
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ mb: 4, textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}
+                >
+                  פלטפורמה מתקדמת לשידוכים המשלבת טכנולוגיה וערכים מסורתיים
+                </Typography>
+                {!userProfile ? (
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Link to="/register" style={{ textDecoration: 'none' }}>
+                      <StyledButton
+                        variant="contained"
+                        color="secondary"
+                        size="large"
+                      >
+                        הרשמה עכשיו
+                      </StyledButton>
+                    </Link>
+                    <Link to="/about" style={{ textDecoration: 'none' }}>
+                      <StyledButton
+                        variant="outlined"
+                        color="inherit"
+                        size="large"
+                      >
+                        למד עוד
+                      </StyledButton>
+                    </Link>
                   </Box>
-                </motion.div>
-              ))}
-            </Box>
-          </motion.div>
+                ) : (
+                  <Link to="/profile" style={{ textDecoration: 'none' }}>
+                    <StyledButton
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                    >
+                      לאזור האישי
+                    </StyledButton>
+                  </Link>
+                )}
+              </AnimatedBox>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box
+                component="img"
+                src="/hero-image.png"
+                alt="Shidduch With Click"
+                sx={{
+                  width: '100%',
+                  maxWidth: 500,
+                  height: 'auto',
+                  display: 'block',
+                  margin: '0 auto',
+                  animation: `${fadeIn} 1s ease-out 0.5s both`,
+                }}
+              />
+            </Grid>
+          </Grid>
         </Container>
-      </FeatureSection>
+      </StyledHeroSection>
+
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Grid container spacing={4}>
+          {features.map((feature, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <AnimatedBox
+                sx={{
+                  animation: `${fadeIn} 1s ease-out ${index * 0.2}s`,
+                }}
+              >
+                <FeatureCard>
+                  <Typography variant="h1" sx={{ fontSize: '3rem', mb: 2 }}>
+                    {feature.icon}
+                  </Typography>
+                  <Typography variant="h5" gutterBottom>
+                    {feature.title}
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {feature.description}
+                  </Typography>
+                </FeatureCard>
+              </AnimatedBox>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Box>
   );
 };

@@ -1,137 +1,102 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import {
   Box,
   Container,
-  Paper,
-  Tabs,
-  Tab,
   Drawer,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
+  ListItemIcon,
+  IconButton,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonalDetails from './components/PersonalDetails';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PersonalDetails from './PersonalDetails';
 import Matches from './Matches';
+import Settings from './Settings';
 
 const drawerWidth = 240;
 
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  '& .MuiDrawer-paper': {
-    width: drawerWidth,
-    boxSizing: 'border-box',
-    backgroundColor: theme.palette.background.default,
-    borderLeft: `1px solid ${theme.palette.divider}`,
-    borderRight: 'none',
-  },
-}));
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginRight: -drawerWidth,
-  ...(open && {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: 0,
-  }),
-}));
-
 const UserProfile = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setSelectedTab(newValue);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   const menuItems = [
-    { text: 'פרטים אישיים', icon: <PersonIcon />, component: <PersonalDetails /> },
-    { text: 'ההתאמות שלי', icon: <FavoriteIcon />, component: <Matches /> },
+    { text: 'פרטים אישיים', icon: <PersonIcon />, path: '' },
+    { text: 'התאמות', icon: <FavoriteIcon />, path: 'matches' },
+    { text: 'הגדרות', icon: <SettingsIcon />, path: 'settings' },
   ];
 
   const drawer = (
-    <div>
-      <List>
-        {menuItems.map((item, index) => (
-          <ListItem
-            button
-            key={item.text}
-            selected={selectedTab === index}
-            onClick={() => setSelectedTab(index)}
-            sx={{
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                color: 'primary.contrastText',
-                '& .MuiListItemIcon-root': {
-                  color: 'primary.contrastText',
-                },
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+    <List>
+      {menuItems.map((item) => (
+        <ListItem button key={item.text} onClick={() => setMobileOpen(false)}>
+          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemText primary={item.text} />
+        </ListItem>
+      ))}
+    </List>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Main open={!isMobile}>
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-          {isMobile && (
-            <Paper sx={{ mb: 2 }}>
-              <Tabs
-                value={selectedTab}
-                onChange={handleTabChange}
-                variant="fullWidth"
-                sx={{ borderBottom: 1, borderColor: 'divider' }}
-              >
-                {menuItems.map((item) => (
-                  <Tab
-                    key={item.text}
-                    label={item.text}
-                    icon={item.icon}
-                    sx={{ minHeight: 72 }}
-                  />
-                ))}
-              </Tabs>
-            </Paper>
-          )}
-          
-          {menuItems[selectedTab].component}
-        </Container>
-      </Main>
-
-      {!isMobile && (
-        <StyledDrawer
-          variant="permanent"
-          anchor="right"
+    <Box sx={{ display: 'flex', direction: 'rtl' }}>
+      {isMobile && (
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { sm: 'none' } }}
         >
-          {drawer}
-        </StyledDrawer>
+          <MenuIcon />
+        </IconButton>
       )}
+
+      <Drawer
+        variant={isMobile ? 'temporary' : 'permanent'}
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Container maxWidth="lg">
+          <Routes>
+            <Route path="/" element={<PersonalDetails />} />
+            <Route path="/matches" element={<Matches />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </Container>
+      </Box>
     </Box>
   );
 };

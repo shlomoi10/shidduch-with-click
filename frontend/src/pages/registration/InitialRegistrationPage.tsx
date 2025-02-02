@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -8,275 +8,207 @@ import {
   TextField,
   Typography,
   MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Grid,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Gender, ReligiousStream } from '../../types/user';
 import { useUserContext } from '../../context/UserContext';
+import RegistrationStepper from '../../components/RegistrationStepper';
+import { Gender, ReligiousStream } from '../../types/user';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   marginTop: theme.spacing(4),
   marginBottom: theme.spacing(4),
+  borderRadius: theme.spacing(2),
+  boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
 }));
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  '& .MuiInputLabel-root': {
+    right: theme.spacing(2),
+    left: 'auto',
+    transformOrigin: 'right',
+  },
+  '& .MuiInputLabel-shrink': {
+    transform: 'translate(0, -1.5px) scale(0.75)',
+    right: theme.spacing(2),
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: theme.palette.divider,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
   '& .MuiInputBase-input': {
     textAlign: 'right',
     direction: 'rtl',
   },
-});
+}));
 
-interface FormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  gender: Gender;
-  religiousStream: ReligiousStream;
-}
-
-interface FormErrors {
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  firstName?: string;
-  lastName?: string;
-}
+const ActionButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  padding: theme.spacing(1.5, 4),
+  borderRadius: '25px',
+  fontSize: '1.1rem',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+}));
 
 const InitialRegistrationPage = () => {
   const navigate = useNavigate();
-  const { setUserProfile } = useUserContext();
-
-  const [formData, setFormData] = useState<FormData>({
+  const { userProfile, setUserProfile } = useUserContext();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    gender: 'זכר',
-    religiousStream: 'דתי לאומי',
+    gender: 'זכר' as Gender,
+    religiousStream: 'חרדי' as ReligiousStream,
   });
-
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = 'נא להזין כתובת אימייל';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'נא להזין כתובת אימייל תקינה';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'נא להזין סיסמה';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'הסיסמה חייבת להכיל לפחות 6 תווים';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'נא לאשר את הסיסמה';
-    } else if (formData.confirmPassword !== formData.password) {
-      newErrors.confirmPassword = 'הסיסמאות אינן תואמות';
-    }
-
-    if (!formData.firstName) {
-      newErrors.firstName = 'נא להזין שם פרטי';
-    }
-
-    if (!formData.lastName) {
-      newErrors.lastName = 'נא להזין שם משפחה';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (userProfile) {
       setUserProfile({
-        email: formData.email,
+        ...userProfile,
         personalDetails: {
+          ...userProfile.personalDetails,
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
-          phone: '',
           gender: formData.gender,
-          dateOfBirth: '',
-          height: 0,
-          maritalStatus: 'רווק',
           religiousStream: formData.religiousStream,
-          origin: '',
-          parentsCity: '',
-          fatherOrigin: '',
-          motherOrigin: '',
-          occupation: '',
-          numberOfSiblings: 0,
-          numberOfMarriedSiblings: 0,
-          hobbies: [],
-          specialTalents: [],
-        },
-        education: formData.gender === 'זכר' 
-          ? {
-              type: 'male',
-              yeshiva: '',
-              kollel: '',
-              degree: '',
-              currentStudy: '',
-            }
-          : {
-              type: 'female',
-              seminary: '',
-              degree: '',
-              currentStudy: '',
-            },
-        preferences: {
-          minAge: 18,
-          maxAge: 30,
-          minHeight: 150,
-          maxHeight: 190,
-          religiousStreams: [formData.religiousStream],
-          origins: [],
-          location: '',
-          maritalStatus: ['רווק', 'רווקה'],
         },
       });
-      navigate('/register/personal');
+      navigate('/register/personal-details');
     }
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
+      <RegistrationStepper activeStep={0} />
       <StyledPaper>
         <Typography variant="h4" align="center" gutterBottom>
-          הרשמה ראשונית
+          הרשמה לאתר
+        </Typography>
+        <Typography variant="body1" align="center" color="textSecondary" sx={{ mb: 4 }}>
+          אנא מלא/י את הפרטים הבאים
         </Typography>
         <Box component="form" onSubmit={handleSubmit}>
-          <Box sx={{ mb: 3 }}>
-            <StyledTextField
-              required
-              fullWidth
-              label="אימייל"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              sx={{ mb: 2 }}
-            />
-            <StyledTextField
-              required
-              fullWidth
-              label="סיסמה"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              sx={{ mb: 2 }}
-            />
-            <StyledTextField
-              required
-              fullWidth
-              label="אימות סיסמה"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword}
-              sx={{ mb: 2 }}
-            />
-          </Box>
-
-          <Box sx={{ mb: 3 }}>
-            <StyledTextField
-              required
-              fullWidth
-              label="שם פרטי"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              error={!!errors.firstName}
-              helperText={errors.firstName}
-              sx={{ mb: 2 }}
-            />
-            <StyledTextField
-              required
-              fullWidth
-              label="שם משפחה"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              error={!!errors.lastName}
-              helperText={errors.lastName}
-              sx={{ mb: 2 }}
-            />
-          </Box>
-
-          <Box sx={{ mb: 3 }}>
-            <StyledTextField
-              select
-              required
-              fullWidth
-              label="מגדר"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              sx={{ mb: 2 }}
-            >
-              <MenuItem value="זכר">זכר</MenuItem>
-              <MenuItem value="נקבה">נקבה</MenuItem>
-            </StyledTextField>
-
-            <StyledTextField
-              select
-              required
-              fullWidth
-              label="זרם דתי"
-              name="religiousStream"
-              value={formData.religiousStream}
-              onChange={handleChange}
-            >
-              <MenuItem value="חרדי">חרדי</MenuItem>
-              <MenuItem value="דתי לאומי">דתי לאומי</MenuItem>
-              <MenuItem value="חרדי לאומי">חרדי לאומי</MenuItem>
-              <MenuItem value="חסידי">חסידי</MenuItem>
-              <MenuItem value="ליטאי">ליטאי</MenuItem>
-              <MenuItem value="ספרדי">ספרדי</MenuItem>
-              <MenuItem value="תימני">תימני</MenuItem>
-            </StyledTextField>
-          </Box>
-
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{ minWidth: 200 }}
-            >
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <StyledTextField
+                required
+                fullWidth
+                label="שם פרטי"
+                value={formData.firstName}
+                onChange={(e) =>
+                  setFormData({ ...formData, firstName: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <StyledTextField
+                required
+                fullWidth
+                label="שם משפחה"
+                value={formData.lastName}
+                onChange={(e) =>
+                  setFormData({ ...formData, lastName: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledTextField
+                required
+                fullWidth
+                type="email"
+                label="אימייל"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledTextField
+                required
+                fullWidth
+                type="password"
+                label="סיסמה"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledTextField
+                required
+                fullWidth
+                type="password"
+                label="אימות סיסמה"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  setFormData({ ...formData, confirmPassword: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>מגדר</InputLabel>
+                <Select
+                  value={formData.gender}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gender: e.target.value as Gender })
+                  }
+                  label="מגדר"
+                >
+                  <MenuItem value="זכר">זכר</MenuItem>
+                  <MenuItem value="נקבה">נקבה</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>זרם דתי</InputLabel>
+                <Select
+                  value={formData.religiousStream}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      religiousStream: e.target.value as ReligiousStream,
+                    })
+                  }
+                  label="זרם דתי"
+                >
+                  <MenuItem value="חרדי">חרדי</MenuItem>
+                  <MenuItem value="דתי לאומי">דתי לאומי</MenuItem>
+                  <MenuItem value="חרדי לאומי">חרדי לאומי</MenuItem>
+                  <MenuItem value="חסידי">חסידי</MenuItem>
+                  <MenuItem value="ליטאי">ליטאי</MenuItem>
+                  <MenuItem value="ספרדי">ספרדי</MenuItem>
+                  <MenuItem value="תימני">תימני</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
+            <ActionButton type="submit" variant="contained" color="primary">
               המשך
-            </Button>
+            </ActionButton>
           </Box>
         </Box>
       </StyledPaper>

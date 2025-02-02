@@ -1,161 +1,110 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Box,
-  CssBaseline,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  Button,
+  Container,
   Toolbar,
-  Typography,
-  useScrollTrigger,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import InfoIcon from '@mui/icons-material/Info';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LoginIcon from '@mui/icons-material/Login';
+import { styled, keyframes } from '@mui/material/styles';
 import { useUserContext } from '../context/UserContext';
 
-interface Props {
-  children: React.ReactNode;
-}
+const logoSlide = keyframes`
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+`;
 
-interface MenuItemType {
-  text: string;
-  path: string;
-  icon: JSX.Element;
-  requiresAuth?: boolean;
-}
+const buttonFade = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
-const drawerWidth = 240;
+const StyledAppBar = styled(AppBar)(() => ({
+  background: 'linear-gradient(45deg, #6B8E23 30%, #556B2F 90%)',
+  boxShadow: '0 3px 5px 2px rgba(105, 139, 35, .3)',
+}));
 
-const Layout = ({ children }: Props) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+const LogoText = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  animation: `${logoSlide} 0.8s ease-out`,
+  '& img': {
+    height: '40px',
+    marginRight: theme.spacing(1),
+  },
+  color: '#fff',
+}));
+
+const NavButton = styled(Button)(({ theme }) => ({
+  color: '#fff',
+  margin: theme.spacing(0, 1),
+  animation: `${buttonFade} 0.8s ease-out`,
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+}));
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const { userProfile } = useUserContext();
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-  });
-
-  const menuItems: MenuItemType[] = [
-    { text: 'דף הבית', path: '/', icon: <HomeIcon /> },
-    { text: 'אודות', path: '/about', icon: <InfoIcon /> },
-    ...(userProfile
-      ? [
-          { text: 'פרופיל', path: '/profile', icon: <PersonIcon /> },
-          { text: 'התאמות', path: '/matches', icon: <FavoriteIcon /> },
-        ]
-      : [{ text: 'התחברות', path: '/login', icon: <LoginIcon /> }]),
-  ];
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        שידוך בקליק
-      </Typography>
-      <Divider />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem
-            key={item.text}
-            component={RouterLink}
-            to={item.path}
-            sx={{
-              color: 'inherit',
-              textDecoration: 'none',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-              },
-            }}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{
-          backgroundColor: trigger ? 'background.default' : 'transparent',
-          boxShadow: trigger ? 1 : 'none',
-          transition: 'all 0.3s',
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            sx={{ flexGrow: 1 }}
-          >
-            שידוך בקליק
-          </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {menuItems.map((item) => (
-              <RouterLink
-                key={item.text}
-                to={item.path}
-                style={{ textDecoration: 'none', color: 'inherit', marginLeft: '1rem' }}
-              >
-                {item.text}
-              </RouterLink>
-            ))}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box component="nav">
-        <Drawer
-          variant="temporary"
-          anchor="right"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          mt: { xs: 7, sm: 8 },
-        }}
-      >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <StyledAppBar position="static">
+        <Container maxWidth="lg">
+          <Toolbar disableGutters>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <LogoText>
+                <img src="/logo.png" alt="Shidduch With Click" />
+                שידוך בקליק
+              </LogoText>
+            </Link>
+            <Box sx={{ flexGrow: 1 }} />
+            <Link to="/about" style={{ textDecoration: 'none' }}>
+              <NavButton>
+                אודות
+              </NavButton>
+            </Link>
+            {userProfile ? (
+              <Link to="/profile" style={{ textDecoration: 'none' }}>
+                <NavButton>
+                  אזור אישי
+                </NavButton>
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" style={{ textDecoration: 'none' }}>
+                  <NavButton>
+                    התחברות
+                  </NavButton>
+                </Link>
+                <Link to="/register" style={{ textDecoration: 'none' }}>
+                  <NavButton
+                    variant="outlined"
+                    sx={{ borderColor: '#fff' }}
+                  >
+                    הרשמה
+                  </NavButton>
+                </Link>
+              </>
+            )}
+          </Toolbar>
+        </Container>
+      </StyledAppBar>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         {children}
       </Box>
     </Box>

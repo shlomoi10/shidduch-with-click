@@ -5,10 +5,11 @@ import { useUserContext } from '../../../context/UserContext';
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   height: '100%',
+  direction: 'rtl',
 }));
 
 const DetailItem = ({ label, value }: { label: string; value: string | number }) => (
-  <Box sx={{ mb: 2 }}>
+  <Box sx={{ mb: 2, textAlign: 'right' }}>
     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
       {label}
     </Typography>
@@ -30,8 +31,8 @@ const PersonalDetails = () => {
   const { personalDetails } = userProfile;
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Typography variant="h5" gutterBottom align="center">
+    <Box sx={{ flexGrow: 1, direction: 'rtl' }}>
+      <Typography variant="h5" gutterBottom align="right">
         פרטים אישיים
       </Typography>
       <Grid container spacing={3}>
@@ -51,6 +52,13 @@ const PersonalDetails = () => {
             <DetailItem label="זרם דתי" value={personalDetails.religiousStream} />
             <DetailItem label="מוצא" value={personalDetails.origin} />
             <DetailItem label="עיר מגורי ההורים" value={personalDetails.parentsCity} />
+            <DetailItem label="מוצא האב" value={personalDetails.fatherOrigin} />
+            <DetailItem label="מוצא האם" value={personalDetails.motherOrigin} />
+          </StyledPaper>
+        </Grid>
+        <Grid item xs={12}>
+          <StyledPaper>
+            <DetailItem label="עיסוק" value={personalDetails.occupation} />
             <DetailItem label="מספר אחים ואחיות" value={personalDetails.numberOfSiblings} />
             <DetailItem label="מספר אחים ואחיות נשואים" value={personalDetails.numberOfMarriedSiblings} />
           </StyledPaper>

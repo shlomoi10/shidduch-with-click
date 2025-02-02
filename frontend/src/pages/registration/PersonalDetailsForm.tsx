@@ -1,46 +1,59 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {
   Box,
   Button,
   Container,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Typography,
-  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { PersonalDetails } from '../../types/user';
-import { useUserContext } from '../../context/UserContext';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { he } from 'date-fns/locale';
+import { PersonalDetails, MaritalStatus, Gender, ReligiousStream } from '../../types/user';
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
-  marginTop: theme.spacing(4),
-  marginBottom: theme.spacing(4),
-}));
+const MARITAL_STATUS_OPTIONS: MaritalStatus[] = [
+  'רווק',
+  'רווקה',
+  'גרוש',
+  'גרושה',
+  'אלמן',
+  'אלמנה',
+];
 
-const StyledTextField = styled(TextField)({
-  '& .MuiInputBase-input': {
-    textAlign: 'right',
-    direction: 'rtl',
-  },
-});
+const RELIGIOUS_STREAM_OPTIONS: ReligiousStream[] = [
+  'חרדי',
+  'דתי לאומי',
+  'חרדי לאומי',
+  'חסידי',
+  'ליטאי',
+  'ספרדי',
+  'תימני',
+];
 
-const PersonalDetailsForm = () => {
-  const navigate = useNavigate();
-  const { userProfile, updateUserProfile } = useUserContext();
+interface PersonalDetailsFormProps {
+  onSubmit: (data: PersonalDetails) => void;
+  initialData?: Partial<PersonalDetails>;
+}
 
-  const [formData, setFormData] = useState<PersonalDetails>({
+const PersonalDetailsForm = ({ onSubmit, initialData }: PersonalDetailsFormProps) => {
+  const [formData, setFormData] = useState<Partial<PersonalDetails>>({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     gender: 'זכר',
-    dateOfBirth: '',
-    height: 0,
+    dateOfBirth: new Date(),
+    height: 170,
     maritalStatus: 'רווק',
-    religiousStream: 'דתי לאומי',
+    religiousStream: 'חרדי',
     origin: '',
     parentsCity: '',
     fatherOrigin: '',
@@ -50,63 +63,71 @@ const PersonalDetailsForm = () => {
     numberOfMarriedSiblings: 0,
     hobbies: [],
     specialTalents: [],
+    ...initialData,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    
-    // המרה למספר עבור שדות מספריים
-    if (['height', 'numberOfSiblings', 'numberOfMarriedSiblings'].includes(name)) {
-      setFormData(prev => ({
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      setFormData((prev) => ({
         ...prev,
-        [name]: value === '' ? 0 : Number(value),
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
+        dateOfBirth: date,
       }));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userProfile) {
-      updateUserProfile({ personalDetails: formData });
-      navigate('/register/education');
-    }
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onSubmit(formData as PersonalDetails);
   };
 
   return (
-    <Container maxWidth="md">
-      <StyledPaper>
-        <Typography variant="h4" align="center" gutterBottom>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h5" component="h2" gutterBottom align="right">
           פרטים אישיים
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Grid container spacing={3} direction="row-reverse">
             <Grid item xs={12} sm={6}>
-              <StyledTextField
+              <TextField
                 required
                 fullWidth
                 label="שם פרטי"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
+              <TextField
                 required
                 fullWidth
                 label="שם משפחה"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
+              <TextField
                 required
                 fullWidth
                 label="אימייל"
@@ -114,46 +135,47 @@ const PersonalDetailsForm = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
+              <TextField
                 required
                 fullWidth
                 label="טלפון"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                select
-                required
-                fullWidth
-                label="מגדר"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              >
-                <MenuItem value="זכר">זכר</MenuItem>
-                <MenuItem value="נקבה">נקבה</MenuItem>
-              </StyledTextField>
+              <FormControl fullWidth>
+                <InputLabel id="gender-label">מגדר</InputLabel>
+                <Select
+                  labelId="gender-label"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleSelectChange}
+                  label="מגדר"
+                >
+                  <MenuItem value="זכר">זכר</MenuItem>
+                  <MenuItem value="נקבה">נקבה</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
-                fullWidth
-                label="תאריך לידה"
-                name="dateOfBirth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={he}>
+                <DatePicker
+                  label="תאריך לידה"
+                  value={formData.dateOfBirth}
+                  onChange={handleDateChange}
+                  format="dd/MM/yyyy"
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
+              <TextField
                 required
                 fullWidth
                 label="גובה (בס״מ)"
@@ -161,127 +183,133 @@ const PersonalDetailsForm = () => {
                 type="number"
                 value={formData.height}
                 onChange={handleChange}
+                inputProps={{ min: 140, max: 220 }}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                select
-                required
-                fullWidth
-                label="מצב משפחתי"
-                name="maritalStatus"
-                value={formData.maritalStatus}
-                onChange={handleChange}
-              >
-                <MenuItem value="רווק">רווק</MenuItem>
-                <MenuItem value="רווקה">רווקה</MenuItem>
-              </StyledTextField>
+              <FormControl fullWidth>
+                <InputLabel id="marital-status-label">מצב משפחתי</InputLabel>
+                <Select
+                  labelId="marital-status-label"
+                  name="maritalStatus"
+                  value={formData.maritalStatus}
+                  onChange={handleSelectChange}
+                  label="מצב משפחתי"
+                >
+                  {MARITAL_STATUS_OPTIONS.map((status) => (
+                    <MenuItem key={status} value={status}>
+                      {status}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                select
-                required
-                fullWidth
-                label="זרם דתי"
-                name="religiousStream"
-                value={formData.religiousStream}
-                onChange={handleChange}
-              >
-                <MenuItem value="חרדי">חרדי</MenuItem>
-                <MenuItem value="דתי לאומי">דתי לאומי</MenuItem>
-                <MenuItem value="חרדי לאומי">חרדי לאומי</MenuItem>
-                <MenuItem value="חסידי">חסידי</MenuItem>
-                <MenuItem value="ליטאי">ליטאי</MenuItem>
-                <MenuItem value="ספרדי">ספרדי</MenuItem>
-                <MenuItem value="תימני">תימני</MenuItem>
-              </StyledTextField>
+              <FormControl fullWidth>
+                <InputLabel id="religious-stream-label">זרם דתי</InputLabel>
+                <Select
+                  labelId="religious-stream-label"
+                  name="religiousStream"
+                  value={formData.religiousStream}
+                  onChange={handleSelectChange}
+                  label="זרם דתי"
+                >
+                  {RELIGIOUS_STREAM_OPTIONS.map((stream) => (
+                    <MenuItem key={stream} value={stream}>
+                      {stream}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="מוצא"
                 name="origin"
                 value={formData.origin}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="עיר מגורי ההורים"
                 name="parentsCity"
                 value={formData.parentsCity}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="מוצא האב"
                 name="fatherOrigin"
                 value={formData.fatherOrigin}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="מוצא האם"
                 name="motherOrigin"
                 value={formData.motherOrigin}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+            <Grid item xs={12}>
+              <TextField
                 fullWidth
                 label="עיסוק"
                 name="occupation"
                 value={formData.occupation}
                 onChange={handleChange}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="מספר אחים ואחיות"
                 name="numberOfSiblings"
                 type="number"
                 value={formData.numberOfSiblings}
                 onChange={handleChange}
+                inputProps={{ min: 0 }}
+                dir="rtl"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <StyledTextField
-                required
+              <TextField
                 fullWidth
                 label="מספר אחים ואחיות נשואים"
                 name="numberOfMarriedSiblings"
                 type="number"
                 value={formData.numberOfMarriedSiblings}
                 onChange={handleChange}
+                inputProps={{ min: 0 }}
+                dir="rtl"
               />
             </Grid>
           </Grid>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               size="large"
-              sx={{ minWidth: 200 }}
             >
               המשך
             </Button>
           </Box>
         </Box>
-      </StyledPaper>
+      </Paper>
     </Container>
   );
 };
