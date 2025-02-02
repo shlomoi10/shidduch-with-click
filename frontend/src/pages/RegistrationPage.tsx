@@ -40,10 +40,9 @@ const StyledTextField = styled(TextField)({
   '& .MuiInputLabel-root': {
     right: 20,
     left: 'auto',
-    transformOrigin: 'right',
+    transformOrigin: 'top right',
     '&.MuiInputLabel-shrink': {
-      transform: 'translate(0, -1.5px) scale(0.75)',
-      right: 0,
+      transform: 'translate(12%, -9px) scale(0.75)',
     },
   },
   '& .MuiOutlinedInput-notchedOutline': {
