@@ -38,12 +38,22 @@ const StyledTextField = styled(TextField)({
     direction: 'rtl',
   },
   '& .MuiInputLabel-root': {
-    transformOrigin: 'right',
-    right: 0,
+    right: 20,
     left: 'auto',
+    transformOrigin: 'right',
+    '&.MuiInputLabel-shrink': {
+      transform: 'translate(0, -1.5px) scale(0.75)',
+      right: 0,
+    },
   },
-  '& .MuiInputLabel-shrink': {
-    transform: 'translate(0, -1.5px) scale(0.75)',
+  '& .MuiOutlinedInput-notchedOutline': {
+    textAlign: 'right',
+    direction: 'rtl',
+  },
+  '& .MuiFormHelperText-root': {
+    marginRight: '14px',
+    marginLeft: '0',
+    textAlign: 'right',
   },
 });
 
